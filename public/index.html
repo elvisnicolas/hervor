@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>HERVOR · Emoliente Premium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #0D0A14;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 16px 30px;
+            margin: 0;
+            color: #F0EAF8;
+        }
+
+        .app-container {
+            max-width: 380px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #110D1E;
+            border: 1px solid #3D1A6E;
+            border-radius: 24px;
+            padding: 28px 20px 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            transition: all 0.2s ease;
+            position: relative;
+            backdrop-filter: blur(2px);
+        }
+
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #2A1B3E;
+            transition: background 0.3s ease, transform 0.2s ease;
+            border: none;
+        }
+
+        .dot.active {
+            background: #F2A800;
+            box-shadow: 0 0 12px rgba(242, 168, 0, 0.4);
+            transform: scale(1.15);
+        }
+
+        .dot.completed {
+            background: #7C3AED;
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: #F0EAF8;
+            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: #6B5A8A;
+            font-size: 14px;
+            font-weight: 400;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .label-dorado {
+            display: inline-block;
+            background: #F2A800;
+            color: #0D0A14;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 4px 14px;
+            border-radius: 30px;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            background: #1A1429;
+            border: 1px solid #2F1F4A;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 15px;
+            color: #F0EAF8;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.2s;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #F2A800;
+            box-shadow: 0 0 0 3px rgba(242, 168, 0, 0.15);
+        }
+
+        textarea::placeholder {
+            color: #4A3A5E;
+            font-weight: 400;
+        }
+
+        .char-counter {
+            text-align: right;
+            font-size: 12px;
+            color: #6B5A8A;
+            margin-top: 6px;
+            padding-right: 4px;
+        }
+
+        .char-counter.warning {
+            color: #F2A800;
+        }
+
+        .char-counter.danger {
+            color: #E5484D;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: #F2A800;
+            color: #0D0A14;
+            border: none;
+            border-radius: 40px;
+            padding: 14px 20px;
+            font-family: 'Inter', system-ui, sans-serif;
+            font-weight: 700;
+            font-size: 17px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: 0.2px;
+        }
+
+        .btn-primary:hover {
+            background: #FFBE2E;
+            transform: scale(1.01);
+            box-shadow: 0 6px 20px rgba(242, 168, 0, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            background: transparent;
+            color: #6B5A8A;
+            border: 1px solid #2F1F4A;
+            border-radius: 40px;
+            padding: 12px 20px;
+            font-family: 'Inter', system-ui, sans-serif;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 12px;
+        }
+
+        .btn-secondary:hover {
+            background: #1A1429;
+            border-color: #3D1A6E;
+            color: #F0EAF8;
+        }
+
+        .mensaje-recibido {
+            background: #1A1429;
+            border-radius: 16px;
+            padding: 20px 18px;
+            margin: 16px 0 20px;
+            border-left: 4px solid #F2A800;
+        }
+
+        .mensaje-recibido .emoji {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .mensaje-recibido .texto {
+            font-style: italic;
+            color: #F0EAF8;
+            font-size: 16px;
+            line-height: 1.5;
+            quotes: "“" "”" "‘" "’";
+        }
+
+        .mensaje-recibido .texto::before {
+            content: "“";
+            color: #6B5A8A;
+        }
+
+        .mensaje-recibido .texto::after {
+            content: "”";
+            color: #6B5A8A;
+        }
+
+        .separador {
+            border: none;
+            border-top: 1px solid #2F1F4A;
+            margin: 18px 0;
+        }
+
+        .descuento-card {
+            background: #1A1429;
+            border: 2px solid #F2A800;
+            border-radius: 20px;
+            padding: 24px 16px 20px;
+            text-align: center;
+            margin: 12px 0 16px;
+            box-shadow: 0 0 30px rgba(242, 168, 0, 0.08);
+        }
+
+        .descuento-number {
+            font-size: 60px;
+            font-weight: 700;
+            color: #F2A800;
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+
+        .descuento-razon {
+            font-style: italic;
+            color: #6B5A8A;
+            font-size: 15px;
+            margin-top: 6px;
+        }
+
+        .descuento-footer {
+            margin-top: 14px;
+            font-size: 13px;
+            color: #6B5A8A;
+            line-height: 1.6;
+            border-top: 1px solid #2F1F4A;
+            padding-top: 14px;
+        }
+
+        .descuento-footer strong {
+            color: #F0EAF8;
+            font-weight: 500;
+        }
+
+        .mensaje-guardado {
+            font-size: 14px;
+            color: #6B5A8A;
+            margin: 14px 0 6px;
+            text-align: center;
+        }
+
+        .loading-overlay {
+            display: none;
+            text-align: center;
+            padding: 20px 0 10px;
+        }
+
+        .loading-overlay.active {
+            display: block;
+        }
+
+        .loading-emoji {
+            font-size: 32px;
+            display: inline-block;
+            animation: pulse 1.2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.6; }
+        }
+
+        .loading-text {
+            color: #6B5A8A;
+            font-size: 14px;
+            margin-top: 6px;
+            font-weight: 400;
+        }
+
+        .footer-brand {
+            text-align: center;
+            font-size: 13px;
+            color: #3D2A52;
+            letter-spacing: 0.3px;
+            margin-top: 28px;
+            padding-top: 12px;
+            border-top: 1px solid #1A1429;
+            font-weight: 400;
+        }
+
+        @media (max-width: 420px) {
+            .card {
+                padding: 24px 16px 28px;
+                border-radius: 20px;
+            }
+            h2 {
+                font-size: 20px;
+            }
+            .descuento-number {
+                font-size: 52px;
+            }
+        }
+
+        textarea::-webkit-scrollbar {
+            width: 4px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #1A1429;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #3D1A6E;
+            border-radius: 8px;
+        }
+
+        textarea.error {
+            border-color: #E5484D;
+            box-shadow: 0 0 0 3px rgba(229, 72, 77, 0.15);
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="card">
+
+        <!-- Progress dots -->
+        <div class="progress-dots" id="progressDots">
+            <span class="dot active" data-step="1"></span>
+            <span class="dot" data-step="2"></span>
+            <span class="dot" data-step="3"></span>
+        </div>
+
+        <!-- ============ PASO 1 ============ -->
+        <div class="step active" id="step1">
+            <h2>¿Cómo llegaste hoy?</h2>
+            <p class="subtitle">Cuéntanos qué pasó. Recibe un mensaje y desbloquea tu descuento.</p>
+
+            <textarea id="problemaInput" maxlength="300" placeholder="Escribe aquí... (mínimo 8 caracteres)"></textarea>
+            <div class="char-counter" id="charCounter1">0 / 300</div>
+
+            <button class="btn-primary" id="btnStep1">Recibir mensaje 🌿</button>
+            <div class="loading-overlay" id="loading1">
+                <span class="loading-emoji">🌿</span>
+                <div class="loading-text">Escuchando tu historia...</div>
+            </div>
+        </div>
+
+        <!-- ============ PASO 2 ============ -->
+        <div class="step" id="step2">
+            <div class="mensaje-recibido" id="mensajeRecibido">
+                <span class="emoji" id="mensajeEmoji">✨</span>
+                <div class="texto" id="mensajeTexto">Tu mensaje personalizado aparecerá aquí.</div>
+            </div>
+
+            <hr class="separador">
+
+            <span class="label-dorado">AHORA TÚ</span>
+            <p class="subtitle" style="margin-top: 4px;">Deja un mensaje de aliento para la siguiente persona. Mientras más original, mejor descuento.</p>
+
+            <textarea id="motivacionInput" maxlength="250" placeholder="Escríbele algo real. No clichés — algo que tú hubieras querido escuchar hoy."></textarea>
+            <div class="char-counter" id="charCounter2">0 / 250</div>
+
+            <button class="btn-primary" id="btnStep2">Ver mi descuento ✨</button>
+            <div class="loading-overlay" id="loading2">
+                <span class="loading-emoji">🌿</span>
+                <div class="loading-text">Evaluando tu mensaje...</div>
+            </div>
+        </div>
+
+        <!-- ============ PASO 3 ============ -->
+        <div class="step" id="step3">
+            <div class="descuento-card">
+                <div class="descuento-number" id="descuentoNumero">5%</div>
+                <div class="descuento-razon" id="descuentoRazon">"Por tu autenticidad"</div>
+            </div>
+
+            <p style="text-align: center; font-size: 14px; color: #F0EAF8; margin-top: 4px; font-weight: 500;">Muestra esta pantalla al momento de pagar</p>
+
+            <div class="descuento-footer">
+                <strong>Válido esta noche</strong> · Un uso por persona<br>
+                <strong>HERVOR</strong> · Av. Petit Thouars 2072, Lince
+            </div>
+
+            <div class="mensaje-guardado">Tu mensaje quedó guardado. La próxima persona lo va a necesitar.</div>
+
+            <button class="btn-secondary" id="btnReset">Volver a empezar</button>
+        </div>
+
+    </div>
+
+    <!-- Footer fijo -->
+    <div class="footer-brand">Siglos hirviendo, recién servido.</div>
+</div>
+
+<script>
+    (function() {
+        "use strict";
+
+        // ----- DOM refs -----
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const dots = document.querySelectorAll('.dot');
+
+        const problemaInput = document.getElementById('problemaInput');
+        const charCounter1 = document.getElementById('charCounter1');
+        const btnStep1 = document.getElementById('btnStep1');
+        const loading1 = document.getElementById('loading1');
+
+        const mensajeTexto = document.getElementById('mensajeTexto');
+        const mensajeEmoji = document.getElementById('mensajeEmoji');
+        const motivacionInput = document.getElementById('motivacionInput');
+        const charCounter2 = document.getElementById('charCounter2');
+        const btnStep2 = document.getElementById('btnStep2');
+        const loading2 = document.getElementById('loading2');
+
+        const descuentoNumero = document.getElementById('descuentoNumero');
+        const descuentoRazon = document.getElementById('descuentoRazon');
+        const btnReset = document.getElementById('btnReset');
+
+        // ----- Helpers -----
+        function goToStep(step) {
+            [step1, step2, step3].forEach((el, idx) => {
+                el.classList.toggle('active', idx === step - 1);
+            });
+            dots.forEach((dot, idx) => {
+                dot.classList.remove('active', 'completed');
+                if (idx === step - 1) dot.classList.add('active');
+                else if (idx < step - 1) dot.classList.add('completed');
+            });
+        }
+
+        function resetAll() {
+            problemaInput.value = '';
+            motivacionInput.value = '';
+            charCounter1.textContent = '0 / 300';
+            charCounter2.textContent = '0 / 250';
+            mensajeTexto.textContent = 'Tu mensaje personalizado aparecerá aquí.';
+            mensajeEmoji.textContent = '✨';
+            descuentoNumero.textContent = '5%';
+            descuentoRazon.textContent = '"Por tu autenticidad"';
+            [problemaInput, motivacionInput].forEach(el => el.classList.remove('error'));
+            goToStep(1);
+            btnStep1.disabled = false;
+            btnStep2.disabled = false;
+            loading1.classList.remove('active');
+            loading2.classList.remove('active');
+        }
+
+        function updateCounter(input, counter, max) {
+            const len = input.value.length;
+            counter.textContent = len + ' / ' + max;
+            counter.classList.remove('warning', 'danger');
+            if (len > max * 0.85) counter.classList.add('warning');
+            if (len >= max) counter.classList.add('danger');
+        }
+
+        problemaInput.addEventListener('input', function() {
+            updateCounter(this, charCounter1, 300);
+            this.classList.remove('error');
+        });
+        motivacionInput.addEventListener('input', function() {
+            updateCounter(this, charCounter2, 250);
+            this.classList.remove('error');
+        });
+
+        // ----- LLAMADA A LA API -----
+        async function callAPI(prompt) {
+            // 🔥 CAMBIA ESTA URL POR LA DE TU BACKEND EN RENDER
+            const API_URL = 'https://tu-backend-en-render.onrender.com/api/chat';
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: prompt })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('Error en API:', error);
+                return null;
+            }
+        }
+
+        // ----- PASO 1: Enviar problema -----
+        btnStep1.addEventListener('click', async function() {
+            const text = problemaInput.value.trim();
+            if (text.length < 8) {
+                problemaInput.classList.add('error');
+                problemaInput.focus();
+                return;
+            }
+            problemaInput.classList.remove('error');
+
+            btnStep1.disabled = true;
+            loading1.classList.add('active');
+
+            const prompt = `Eres el alma de HERVOR, una marca de Lima. Eres como un amigo de barrio que escucha de verdad — cálido, directo, con humor cuando ayuda. No eres un chatbot ni un vendedor.
+
+IMPORTANTE — LECTURA DEL MENSAJE: El cliente puede tener faltas ortográficas, errores de tipeo, palabras incompletas o frases cortadas (viene de voz a texto o escribió rápido). Deduce siempre la intención real del mensaje, ignora los errores de escritura.
+
+Usa jerga peruana SOLO si encaja naturalmente — "causa", "brother", "ya pues", "no te rayes". Si no encaja, habla normal. Lo importante es sonar humano, no sonar peruano a la fuerza.
+
+REGLA CLAVE: Tu respuesta es 100% sobre la persona y lo que vivió. NO menciones ingredientes (linaza, uña de gato, toronjil, hierbas, etc.), NO menciones la bebida, NO vendas nada. Si quieres hacer una referencia a HERVOR, que sea muy pícara, de refilón, casi invisible — o no la hagas.
+
+El cliente escribió: "${text}"
+
+Genera un mensaje de aliento personalizado — máximo 2 líneas — que haga sentir a la persona escuchada y comprendida. Puede ser consolador, cómico, o ambos. Nada genérico.
+
+Responde SOLO en JSON sin backticks: {"mensaje":"tu mensaje aquí","emoji":"un solo emoji"}`;
+
+            try {
+                const result = await callAPI(prompt);
+                let mensaje = 'No te preocupes, todo tiene solución.';
+                let emoji = '💪';
+
+                if (result && result.mensaje) {
+                    mensaje = result.mensaje;
+                    emoji = result.emoji || '✨';
+                } else {
+                    const fallbacks = [
+                        { mensaje: 'Ya pues, no es el fin del mundo. Respira y dale.', emoji: '🌿' },
+                        { mensaje: 'Tranqui, causa. Esto también va a pasar.', emoji: '🤝' },
+                        { mensaje: 'A veces el día pesa, pero tú pesas más. Sigue.', emoji: '💪' }
+                    ];
+                    const idx = Math.floor(Math.random() * fallbacks.length);
+                    mensaje = fallbacks[idx].mensaje;
+                    emoji = fallbacks[idx].emoji;
+                }
+
+                mensajeTexto.textContent = mensaje;
+                mensajeEmoji.textContent = emoji;
+                goToStep(2);
+                setTimeout(() => motivacionInput.focus(), 300);
+
+            } catch (e) {
+                console.error('Error en paso 1:', e);
+                mensajeTexto.textContent = 'A veces el día pesa, pero tú pesas más. Sigue.';
+                mensajeEmoji.textContent = '💪';
+                goToStep(2);
+            } finally {
+                btnStep1.disabled = false;
+                loading1.classList.remove('active');
+            }
+        });
+
+        // ----- PASO 2: Enviar motivación -----
+        btnStep2.addEventListener('click', async function() {
+            const text = motivacionInput.value.trim();
+            if (text.length < 10) {
+                motivacionInput.classList.add('error');
+                motivacionInput.focus();
+                return;
+            }
+            motivacionInput.classList.remove('error');
+
+            btnStep2.disabled = true;
+            loading2.classList.add('active');
+
+            const prompt = `Eres el juez de descuentos de HERVOR. Eres BRUTALMENTE estricto. Tu respuesta por defecto es siempre 5%.
+
+El cliente dejó este mensaje de aliento para la siguiente persona con un mal día: "${text}"
+
+REGLA CRÍTICA: El descuento se basa ÚNICAMENTE en la originalidad y creatividad del mensaje. Mencionar "HERVOR", "emoliente" o cualquier ingrediente NO suma puntos — eso es ruido, no originalidad. Un mensaje que diga "ánimo, tómate un hervor" vale exactamente lo mismo que uno que diga "ánimo" — ambos son 5%.
+
+CALIBRACIÓN POR NIVEL:
+5% (~55% de los casos) — Frases de calendario motivacional: "tú puedes", "todo pasa", "mañana será mejor", "sigue adelante", "no te rindas", o cualquier variación. Mencionar la marca sin valor creativo real también es 5%.
+10% (~25% de los casos) — Tiene un ángulo propio: chiste que funciona, metáfora nueva, perspectiva inesperada. No basta ser "lindo".
+15% (~15% de los casos) — Humor y verdad combinados de forma que sorprende. Algo que alguien se mandaría por WhatsApp a un amigo.
+20% (~5% de los casos) — Prácticamente no existe. En mil mensajes quizás uno.
+
+REGLA FINAL: La duda siempre se resuelve hacia abajo.
+
+Responde SOLO en JSON sin backticks: {"descuento":5,"razon":"frase corta máximo 8 palabras, tono cálido pero honesto"}`;
+
+            try {
+                const result = await callAPI(prompt);
+                let descuento = 5;
+                let razon = 'Mensaje sincero.';
+
+                if (result && typeof result.descuento === 'number') {
+                    descuento = Math.min(Math.max(result.descuento, 5), 20);
+                    razon = result.razon || 'Originalidad detectada.';
+                } else {
+                    const razones = [
+                        'Autenticidad sobre todo.',
+                        'Buena vibra, buen descuento.',
+                        'Honestidad se premia.'
+                    ];
+                    const rand = Math.floor(Math.random() * razones.length);
+                    razon = razones[rand];
+                    descuento = Math.random() > 0.6 ? 10 : 5;
+                }
+
+                descuentoNumero.textContent = descuento + '%';
+                descuentoRazon.textContent = `"${razon}"`;
+                goToStep(3);
+
+            } catch (e) {
+                console.error('Error en paso 2:', e);
+                descuentoNumero.textContent = '5%';
+                descuentoRazon.textContent = '"Por tu mensaje real"';
+                goToStep(3);
+            } finally {
+                btnStep2.disabled = false;
+                loading2.classList.remove('active');
+            }
+        });
+
+        // ----- Reset -----
+        btnReset.addEventListener('click', resetAll);
+
+        // ----- Inicializar contadores -----
+        updateCounter(problemaInput, charCounter1, 300);
+        updateCounter(motivacionInput, charCounter2, 250);
+
+        problemaInput.addEventListener('input', function() {
+            if (this.classList.contains('error') && this.value.trim().length >= 8) {
+                this.classList.remove('error');
+            }
+        });
+        motivacionInput.addEventListener('input', function() {
+            if (this.classList.contains('error') && this.value.trim().length >= 10) {
+                this.classList.remove('error');
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.target.tagName === 'TEXTAREA' && !e.shiftKey) {
+                const id = e.target.id;
+                if (id === 'problemaInput' && !btnStep1.disabled) {
+                    e.preventDefault();
+                    btnStep1.click();
+                } else if (id === 'motivacionInput' && !btnStep2.disabled) {
+                    e.preventDefault();
+                    btnStep2.click();
+                }
+            }
+        });
+
+        window.addEventListener('load', function() {
+            setTimeout(() => problemaInput.focus(), 200);
+        });
+
+    })();
+</script>
+</body>
+</html>
